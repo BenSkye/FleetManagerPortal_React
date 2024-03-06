@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Outlet, Link } from 'react-router-dom';
 import { Layout, Menu, theme, Image } from 'antd';
 import { BsFillMenuButtonWideFill } from 'react-icons/bs';
@@ -12,7 +13,12 @@ import '@/components/layout/styles.css';
 import SearchBar from './components/SearchBar';
 
 const menuItems = [
-  { key: '1', icon: <BsFillMenuButtonWideFill />, label: 'Home', path: '/' },
+  {
+    key: '1',
+    icon: <BsFillMenuButtonWideFill />,
+    label: 'Home',
+    path: '/',
+  },
   { key: '2', icon: <IoFolderOutline />, label: 'Cases', path: '/cases' },
   { key: '3', icon: <LuBus />, label: 'Vehicles', path: '/vehicles' },
   { key: '4', icon: <CiUser />, label: 'Drivers', path: '/drivers' },
@@ -33,11 +39,23 @@ const LayoutMain = () => {
     token: { colorBgLayout },
   } = theme.useToken();
 
+  const [selectedKey, setSelectedKey] = useState('1');
+  const location = useLocation();
+  useEffect(() => {
+    // Lấy đường dẫn hiện tại từ useLocation và tìm kiếm nó trong menuItems
+    const selectedItem = menuItems.find(
+      (item) => item.path === location.pathname
+    );
+    if (selectedItem) {
+      setSelectedKey(selectedItem.key); // Nếu tìm thấy, đặt selectedKey tương ứng
+    }
+  }, [location.pathname]);
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider breakpoint='lg' collapsedWidth='0'>
         <Image width={200} src='logo.png' style={{ margin: '30px 0' }} />
-        <Menu theme='dark' mode='inline'>
+        <Menu theme='dark' mode='inline' selectedKeys={[selectedKey]}>
           {menuItems.map((item) => (
             <Menu.Item key={item.key} icon={item.icon}>
               <Link to={item.path}>{item.label}</Link>
