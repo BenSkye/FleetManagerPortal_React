@@ -1,0 +1,8 @@
+.ant-table table {
+  font-size: 0.9rem;
+  border-radius: 10px;
+}
+.ant-table.ant-table-small.ant-table-fixed-header {
+  border-radius: 10px;
+  overflow: hidden;
+}
