@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { Flex, Table, Typography, Select } from 'antd';
+import { Flex, Table, Typography, Select, Tag } from 'antd';
 import { Chart } from 'react-google-charts';
 import { FaFlag } from 'react-icons/fa';
-import { dataSource } from '@/mock/Datasource';
+import { dataSource, dataActivityLog } from '@/mock/Datasource';
+import {
+  dataSevenLastDay,
+  dataCurrMonth,
+  dataThisMonth,
+} from '@/mock/DataChart';
 import '@/components/pages/home/styles.css';
 
 const { Option } = Select;
@@ -10,7 +15,7 @@ const { Title } = Typography;
 
 const tableStyles = { width: '50%', padding: '8px' };
 
-const columns = [
+const columnsUrgent = [
   {
     title: 'FLAG',
     dataIndex: 'flag',
@@ -46,75 +51,46 @@ const columns = [
   },
 ];
 
-const dataSevenLastDay = [
-  ['Element', 'Case Number'],
-  ['27 May', 8],
-  ['28 May', 10],
-  ['29 May', 2],
-  ['30 May', 1],
-  ['31 May', 4],
-  ['1 June', 19],
-  ['Today', 4],
-];
-const dataCurrMonth = [
-  ['Element', 'Case Number'],
-  ['27 May', 8],
-  ['28 May', 10],
-  ['29 May', 2],
-  ['30 May', 1],
-  ['31 May', 4],
-  ['1 June', 19],
-  ['27 May', 8],
-  ['28 May', 10],
-  ['29 May', 2],
-  ['30 May', 1],
-  ['31 May', 4],
-  ['1 June', 19],
-  ['27 May', 8],
-  ['28 May', 10],
-  ['29 May', 2],
-  ['30 May', 1],
-  ['31 May', 4],
-  ['1 June', 19],
-  ['27 May', 8],
-  ['28 May', 10],
-  ['29 May', 2],
-  ['30 May', 1],
-  ['31 May', 4],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 5],
-  ['1 June', 9],
-  ['1 June', 19],
-  ['1 June', 10],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 5],
-  ['1 June', 19],
-  ['1 June', 6],
-  ['1 June', 19],
-  ['1 June', 7],
-  ['1 June', 2],
-  ['1 June', 9],
-  ['1 June', 8],
-  ['1 June', 7],
-];
-const dataThisMonth = [
-  ['Element', 'Case Number'],
-  ['27 May', 8],
-  ['28 May', 10],
-  ['29 May', 2],
-  ['30 May', 1],
-  ['31 May', 4],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 19],
-  ['1 June', 19],
+const columnsActivityLog = [
+  {
+    title: 'Timestamp',
+    dataIndex: 'timestamp',
+    key: 'timestamp',
+  },
+  {
+    title: 'Case ID',
+    dataIndex: 'caseId',
+    key: 'caseId',
+  },
+  {
+    title: 'User',
+    dataIndex: 'user',
+    key: 'user',
+  },
+  {
+    title: 'Activity',
+    dataIndex: 'activity',
+    key: 'activity',
+    render: (activity) => {
+      switch (activity) {
+        case 'Add':
+          return <Tag color='green'>Add</Tag>;
+        case 'Edit':
+          return <Tag color='red'>Edit</Tag>;
+        case 'Submit':
+          return <Tag color='blue'>Submit</Tag>;
+        case 'Logout':
+          return <Tag color='gray'>Logout</Tag>;
+        default:
+          console.log('Invalid value');
+      }
+    },
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description',
+  },
 ];
 
 function Home() {
@@ -135,6 +111,7 @@ function Home() {
         setSelectedData(dataSevenLastDay);
     }
   };
+
   return (
     <>
       <Flex vertical>
@@ -150,7 +127,7 @@ function Home() {
                 Urgent new cases
               </Title>
             )}
-            columns={columns}
+            columns={columnsUrgent}
             dataSource={dataSource}
             pagination={false}
             scroll={{ y: 210 }}
@@ -163,10 +140,10 @@ function Home() {
                 Activity log
               </Title>
             )}
-            columns={columns}
-            dataSource={dataSource}
+            columns={columnsActivityLog}
+            dataSource={dataActivityLog}
             pagination={false}
-            scroll={{ y: 210 }}
+            scroll={{ y: 233 }}
             style={tableStyles}
           />
         </Flex>
