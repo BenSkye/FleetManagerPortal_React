@@ -10,7 +10,7 @@ function Routing() {
       <Route path='/' element={<LayoutMain />}>
         <Route index element={<Home />} />
         <Route path='/cases' element={<Cases />} />
-        <Route path='/vehicles' element={<Vehicles />} />
+        {/* <Route path='/vehicles' element={<Vehicles />} /> */}
         {/*<Route path='/drivers' element={<Drivers />} />
         <Route path='/activity' element={<Activity />} />
         <Route path='/reports' element={<Reports />} />
