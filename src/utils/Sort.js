@@ -50,8 +50,8 @@ export const sortAlphanumeric = (fieldName) => (a, b) => {
 };
 
 export const sortDateNewst = (value) => (a, b) => {
-  const dateA = new Date(a.dateSubmitted);
-  const dateB = new Date(b.dateSubmitted);
+  const dateA = new Date(a[value]);
+  const dateB = new Date(b[value]);
   return dateB - dateA;
 };
 

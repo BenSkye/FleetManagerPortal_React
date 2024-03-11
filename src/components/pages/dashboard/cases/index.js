@@ -9,10 +9,10 @@ import {
   Select,
   Tag,
 } from 'antd';
-import moment from 'moment';
 import { FaFlag } from 'react-icons/fa';
 import { dataCase } from '@/mock/DataCases';
 import { sortAlphanumeric, sortDateNewst, sortAlphabet } from '@/utils/Sort';
+import moment from 'moment'; // Import thư viện moment
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -20,8 +20,7 @@ const { Search } = Input;
 
 function Cases() {
   const [filteredInfo, setFilteredInfo] = useState({});
-
-  const handleChange = (pagination, filters) => {
+  const handleChange = (_pagination, filters) => {
     setFilteredInfo(filters);
   };
 
@@ -31,18 +30,10 @@ function Cases() {
     setFilteredInfo(filters);
   };
 
-  const handlePickDate = (dates) => {
+  const handleRangePickerChange = (dates) => {
     const filters = { ...filteredInfo };
-    if (dates && dates.length === 2) {
-      filters.dateSubmitted = [
-        dates[0].format('YYYY-MM-DD'),
-        dates[1].format('YYYY-MM-DD'),
-      ];
-    } else {
-      filters.dateSubmitted = [];
-    }
+    filters.dateSubmitted = dates;
     setFilteredInfo(filters);
-    console.log(dates);
   };
 
   const clearFilters = () => {
@@ -60,12 +51,24 @@ function Cases() {
       dataIndex: 'dateSubmitted',
       key: 'dateSubmitted',
       sorter: sortDateNewst('dateSubmitted'),
-      filteredValue: filteredInfo.dateSubmitted || null,
+      filteredValue: filteredInfo.dateSubmitted || null, // Giá trị filter
       onFilter: (value, record) => {
-        if (!value || !value.length) return true; // Nếu không có giá trị hoặc giá trị rỗng, trả về true cho tất cả các bản ghi
-        const [startDate, endDate] = value;
-        const submittedDate = moment(record.dateSubmitted);
-        return submittedDate.isBetween(startDate, endDate, null, '[]'); // Kiểm tra xem ngày đã nộp có nằm trong khoảng ngày lọc hay không
+        const { dateSubmitted } = record;
+        const [startDate, endDate] = filteredInfo.dateSubmitted || [];
+
+        if (startDate && endDate) {
+          const currentDate = new Date(dateSubmitted);
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+
+          if (currentDate >= start && currentDate <= end) {
+            return true;
+          }
+
+          return false;
+        }
+
+        return true;
       },
     },
     {
@@ -140,6 +143,10 @@ function Cases() {
       sorter: sortAlphabet('status'),
       filters: [
         {
+          text: 'All',
+          value: 'All',
+        },
+        {
           text: 'Submitted',
           value: 'Submitted',
         },
@@ -157,7 +164,13 @@ function Cases() {
         },
       ],
       filteredValue: filteredInfo.status || null,
-      onFilter: (value, record) => record.status.includes(value),
+      onFilter: (value, record) => {
+        if (value === 'All') {
+          return true; //
+        } else {
+          return record.status.includes(value);
+        }
+      },
     },
     {
       dataIndex: '',
@@ -194,18 +207,21 @@ function Cases() {
         justify='start'
         gap='middle'
       >
-        <RangePicker style={{ height: '2rem' }} onChange={handlePickDate} />
+        <RangePicker
+          style={{ height: '2rem' }}
+          onChange={handleRangePickerChange}
+        />
         <Select
-          placeholder='Filter status'
           style={{ width: 120, height: '2rem' }}
           onChange={handleSelectFilterStatus}
-          allowClear
           options={[
-            { value: 'Not submitted', label: 'Not submitted' },
+            { value: 'All', label: 'All' },
             { value: 'Submitted', label: 'Submitted' },
+            { value: 'Not submitted', label: 'Not submitted' },
             { value: 'Processing', label: 'Processing' },
             { value: 'Closed', label: 'Closed' },
           ]}
+          defaultValue='All'
         />
         <Button onClick={clearFilters}>Clear filters</Button>
       </Flex>
