@@ -1,7 +1,8 @@
-import React from 'react';
-import { Input, Select, Flex } from 'antd';
+import React, { useState } from 'react';
+import { Input, Select, Flex, AutoComplete } from 'antd';
+import { dataCase } from '@/mock/DataCases';
 
-const options = [
+const optionsFleet = [
   {
     value: 'Fleet name 1',
     label: 'Fleet name 1',
@@ -23,25 +24,48 @@ const boxStyle = {
 };
 
 const SearchBar = ({ onSearch }) => {
-  const handleChange = (value) => {};
+  const [options, setOptions] = useState([]);
+  const handleSearch = (value) => {
+    const filteredOptions = dataCase.filter(
+      (item) =>
+        item.driverName.toLowerCase().includes(value.toLowerCase()) ||
+        item.caseId.toLowerCase().includes(value.toLowerCase()) ||
+        item.vehicleRegistration.toLowerCase().includes(value.toLowerCase())
+    );
 
+    const options = filteredOptions.map((item) => ({
+      value: item.caseId,
+      label: (
+        <div>
+          <div>{item.caseId}</div>
+          <div>{item.driverName}</div>
+          <div>{item.vehicleRegistration}</div>
+        </div>
+      ),
+    }));
+
+    setOptions(options);
+  };
   return (
     <Flex style={boxStyle} justify='space-between' align='center'>
-      <Input.Search
-        placeholder='Search case number / reg / data etc'
-        allowClear
-        onSearch={onSearch}
-        style={{
-          width: 350,
-        }}
-      />
+      <AutoComplete
+        style={{ width: 500 }}
+        options={options}
+        onSearch={handleSearch}
+      >
+        <Input.Search
+          placeholder='Search case number / reg / data etc'
+          allowClear
+          style={{ width: 350 }}
+          enterButton
+        />
+      </AutoComplete>
       <Select
-        defaultValue={options[0]}
+        defaultValue='Fleet name 1'
         style={{
           width: 140,
         }}
-        onChange={handleChange}
-        options={options}
+        options={optionsFleet}
       />
     </Flex>
   );

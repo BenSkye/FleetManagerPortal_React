@@ -12,7 +12,6 @@ import {
 import { FaFlag } from 'react-icons/fa';
 import { dataCase } from '@/mock/DataCases';
 import { sortAlphanumeric, sortDateNewst, sortAlphabet } from '@/utils/Sort';
-import moment from 'moment'; // Import thư viện moment
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -52,7 +51,7 @@ function Cases() {
       key: 'dateSubmitted',
       sorter: sortDateNewst('dateSubmitted'),
       filteredValue: filteredInfo.dateSubmitted || null, // Giá trị filter
-      onFilter: (value, record) => {
+      onFilter: (_value, record) => {
         const { dateSubmitted } = record;
         const [startDate, endDate] = filteredInfo.dateSubmitted || [];
 
