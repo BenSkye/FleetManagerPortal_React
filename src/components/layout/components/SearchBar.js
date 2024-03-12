@@ -46,13 +46,10 @@ const SearchBar = ({ onSearch }) => {
 
     setOptions(options);
   };
+
   return (
     <Flex style={boxStyle} justify='space-between' align='center'>
-      <AutoComplete
-        style={{ width: 500 }}
-        options={options}
-        onSearch={handleSearch}
-      >
+      <AutoComplete options={options} onSearch={handleSearch}>
         <Input.Search
           placeholder='Search case number / reg / data etc'
           allowClear

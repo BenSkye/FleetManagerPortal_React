@@ -8,6 +8,7 @@ import {
   DatePicker,
   Select,
   Tag,
+  AutoComplete,
 } from 'antd';
 import { FaFlag } from 'react-icons/fa';
 import { dataCase } from '@/mock/DataCases';
@@ -178,6 +179,29 @@ function Cases() {
     },
   ];
 
+  const [options, setOptions] = useState([]);
+  const handleSearch = (value) => {
+    const filteredOptions = dataCase.filter(
+      (item) =>
+        item.driverName.toLowerCase().includes(value.toLowerCase()) ||
+        item.caseId.toLowerCase().includes(value.toLowerCase()) ||
+        item.vehicleRegistration.toLowerCase().includes(value.toLowerCase())
+    );
+
+    const options = filteredOptions.map((item) => ({
+      value: item.caseId,
+      label: (
+        <div>
+          <div>{item.caseId}</div>
+          <div>{item.driverName}</div>
+          <div>{item.vehicleRegistration}</div>
+        </div>
+      ),
+    }));
+
+    setOptions(options);
+  };
+
   return (
     <Flex
       justify='center'
@@ -192,14 +216,14 @@ function Cases() {
         <Title level={2} style={{ margin: 5 }}>
           Cases
         </Title>
-        <Search
-          placeholder='Search case number / reg / data etc'
-          allowClear
-          //   onSearch={}
-          style={{
-            width: 350,
-          }}
-        />
+        <AutoComplete options={options} onSearch={handleSearch}>
+          <Input.Search
+            placeholder='Search case number / reg / data etc'
+            allowClear
+            style={{ width: 350 }}
+            enterButton
+          />
+        </AutoComplete>
       </Flex>
       <Flex
         style={{ height: 50, padding: '0 1rem' }}
